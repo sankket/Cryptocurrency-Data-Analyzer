@@ -115,3 +115,22 @@ def pQ(p,q):
         Qty = q / pP - q / pP % min_Qty
     return pP , Qty
 
+# Buy a specific amount of quantity ( q ) of current symbol at price p
+def buy_M(p,q):
+    cancel_orders() # Cancel all orders for current symbol
+    pP,Qty= pQ(p,q) # Calculate correct price and quantity
+    order = ''
+    try:
+        order = client.order_limit_buy(
+            symbol=symbol,
+            recvWindow=10000, # revWindow is maximum time difference allowed between your computer system time and Binance server time
+            quantity='{0:.8f}'.format(float(Qty)),
+            price='{0:.8f}'.format(float(pP)))
+    except BinanceAPIException as e: # If error has occurred print it
+        print (e.status_code)
+        print (e.message)
+
+    printf(order) # Call function printf that prints order details
+
+
+

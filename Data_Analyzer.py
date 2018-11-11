@@ -402,5 +402,31 @@ def print_results():
         # sort data in reverse order
         sorted_data.reverse()
 
+        #print table header
+        print (time.ctime())
+        print ('%5s %5s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %5s %6s %6s %6s %6s %6s' % (
+            'Symbol', 'score', 'r5', 'r20', '2m_ch', '5m_ch', '15m_ch', '30m_ch', '1h_ch', '10MA', '20MA', '50MA', '100MA', '8h_ch',
+            '25-30m',  'r5sum', '1d_ch', '3d_ch','5d_ch', '7d_ch', '10d_ch'))
+
+        # print top 10 cryptocurrencies data
+        for k in range(10):
+            i = sorted_data[k]
+            print ('%5s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %5s %6s %6s %6s %6s %6s' % (
+                symbols[i][:-3], total_score[i], ratio5[i], ratio20[i], price_chance_2_min[i], price_chance_5_min[i],
+                price_chance_15_min[i],price_chance_30_min[i], price_chance_1_hour[i], average_change_10_min[i],
+                average_change_20_min[i],average_change_50_min[i], average_change_100_min[i], price_chance_8_hour[i],
+                price_change_25_30_min[i], ratio5_sum[i], price_change_1_days[i], price_change_3_days[i],
+                price_change_5_days[i], price_change_7_days[i], price_change_10_days[i]))
+
+        # if score for one coin is > 10 will play sound
+        try:
+            if float(total_score[sorted_data[0]]) > 10:
+                winsound.PlaySound('\\Sound.wav', winsound.SND_FILENAME)
+        except Exception as e:
+            print(e)
+
+        # Seconds to wait before repeating while loop
+        time.sleep(1)
+
 
 

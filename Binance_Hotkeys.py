@@ -309,3 +309,31 @@ def trades(bal):
         print ("Error Average Price for Trades")
     return averagePrice,tQty
 
+# quantity has to be > 0.002 because minimum trading quantity on Binance is 0.002
+quantity=0.0021
+
+while True:
+    h = raw_input('Pres enter')
+    s = raw_input('symbol: ')
+    s = s.upper()
+
+    if s == 'BTC':
+        symbol = s + "USDT"
+    else:
+        symbol = s + "BTC"
+
+    bm = BinanceSocketManager(client)
+    conn_key = bm.start_symbol_ticker_socket(symbol, process_message) # Connect to price socket from Binance
+    bm.start() # Start connection to price socket from Binance
+
+    # Calculate step size for price and quantity
+    for x in range(len(data['symbols'])):
+        if (symbol in data['symbols'][x]['symbol']):
+            min_price = float(data['symbols'][x]['filters'][0]['tickSize']) # minimum price step
+            min_Qty = float(data['symbols'][x]['filters'][1]['stepSize']) # minimum quantity step
+
+    # Start listening to your key presses
+    lis = keyboard.Listener(on_press=on_pres)
+    lis.start()
+    lis.join()
+    bm.close()

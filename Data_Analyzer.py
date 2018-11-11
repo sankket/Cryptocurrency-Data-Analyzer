@@ -80,3 +80,42 @@ def get_kline():
         price_change.pop(x)
 
     return symbols, volume, pozitii, prices, prices1,price_change
+# Calculate report between bid and ask offers
+def process_depth(msg):
+    sums5=0
+    sumb5=0
+    m=-1
+    for x in range(5):
+        if float(msg['data']['bids'][x][1])>m:
+            m=float(msg['data']['bids'][x][1])
+        sums5 = sums5 + float(msg['data']['bids'][x][1])
+        sumb5 = sumb5 + float(msg['data']['asks'][x][1])
+    ratio1 = sums5 / sumb5
+    if (ratio1 < 1):
+        ratio1 = ((1 / ratio1) * -1) + 1
+    else:
+        ratio1 -= 1
+    sums20 = 0
+    sumb20 = 0
+    ratio2 = 0
+    try:
+        for x in range(17):
+            sums20 = sums20 + float(msg['data']['bids'][x][1])
+            sumb20 = sumb20 + float(msg['data']['asks'][x][1])
+        ratio2 = sums20 / sumb20
+        if (ratio2 < 1):
+            ratio2 = ((1 / ratio2) * -1) + 1
+        else:
+            ratio2 -= 1
+    except Exception as e:
+        print("")
+
+    for i in range(len(symbols)):
+        simbol = symbols[i].lower() + '@depth20'
+        if simbol == msg['stream']:
+            ratio5[i] = round(ratio1, 2)
+            ratio20[i] = round(ratio2, 2)
+            max_order5[i] = m
+            ratio5_sum[i] = round(float(sums5) * float(current_price[i]) * 100 / float(volume[i]),2)
+            current_price[i] = float(msg['data']['bids'][0][0])
+

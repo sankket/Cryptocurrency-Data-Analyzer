@@ -428,5 +428,12 @@ def print_results():
         # Seconds to wait before repeating while loop
         time.sleep(1)
 
+# Declaring threads
+threads = [threading.Thread(target=kline_continuum),
+           threading.Thread(target=report_10_seconds),
+           threading.Thread(target=print_results)]
+# Starting threads
+[thread.start() for thread in threads]
+[thread.join() for thread in threads]
 
 

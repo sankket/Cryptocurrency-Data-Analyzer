@@ -244,3 +244,68 @@ def on_pres(key):
         print ("Canceled")
         cancel_orders()
 
+# Sell at average price * a, of average price is available
+def if_average(a):
+    b=1.9999-a
+    cancel_orders()
+    if symbol == "BTCUSDT":
+        bal = float(getB("USDT"))
+        if ( bal / price_sell) > 0.002:
+            p , q = trades(bal)
+            p = p * b
+            q = q * a
+            buy_M(p,q)
+        elif (bal / price_sell) > 0.001:
+            print ('Low Balance')
+    else:
+        bal = float(getB(symbol))
+        if bal * price_buy > 0.002:
+            p, q = trades(bal)
+            p = p * a
+            sell_M(p,q)
+        elif bal * price_buy > 0.001:
+            print('Low Balance')
+
+def trades(bal):
+    order=''
+    # Retrieve data for last 40 trades
+    try:
+        order = client.get_my_trades(
+                    symbol=symbol,
+                    limit=40,
+                    recvWindow=15000)
+    except BinanceAPIException as e: # If error has occurred print it
+        print (e.status_code)
+        print (e.message)
+
+    i=len(order)-1
+    averagePrice = tVal = tQty = 0 # tVal = total value, tQty = total quantity
+    if order != '': # Checks if we have received the data from the server
+        if (symbol == "BTCUSDT"): # Check if current symbol is BTCUSDT
+            while i > -1 and tVal < bal: # Go  through last 40 orders and calculate average buying price for current symbol
+                if str(order[i]['isBuyer']) == 'False':
+                    if ( tVal + float(order[i]['price']) * float(order[i]['qty']) > bal):
+                        tQty = tQty + ( bal - tVal ) / float(order[i]['price'])
+                        tVal = bal
+                    else:
+                        tVal = tVal + float(order[i]['price']) * float(order[i]['qty'])
+                        tQty = tQty + float(order[i]['qty'])
+                i = i - 1
+            averagePrice = bal / tQty
+            tQty = bal / averagePrice
+        else:
+            while i > -1 and tQty < bal: # Go  through last 40 orders and calculate average buying price for current symbol
+                if str(order[i]['isBuyer']) == 'True':
+                    if (tQty + float(order[i]['qty']) > bal):
+                        tVal = tVal + float(order[i]['price'])*( bal - tQty)
+                        tQty = tQty + (bal - tQty)
+                    else:
+                        tVal = tVal + float(order[i]['price']) * float(order[i]['qty'])
+                        tQty = tQty + float(order[i]['qty'])
+                i = i - 1
+            averagePrice = tVal / tQty
+            tQty= averagePrice * bal
+    else:
+        print ("Error Average Price for Trades")
+    return averagePrice,tQty
+

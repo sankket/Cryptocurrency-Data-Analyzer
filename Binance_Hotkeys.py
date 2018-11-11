@@ -162,3 +162,28 @@ def getB(symbol):
             return min_Qty
 
 
+# Just another function for selling
+def sell_F(pP,quantity):
+    if symbol == 'BTCUSDT':
+        sell_M(pP, quantity)
+    else:
+        sell_all(pP)
+
+def on_pres(key):
+    while 'price_sell' not in globals(): # Wait until we receive the prices from server
+        cc = '' # Garbage
+
+    # Calculate pressed key
+    try:
+        k = key.char
+    except:
+        k = key.name
+
+    if key == keyboard.Key.esc:
+        return False
+
+    pS = float(price_sell) + min_price # First available ask price + 1 price step
+    pS1 = float(price_sell) - min_price # First available ask price - 1 price step
+    pL = float(price_buy) - min_price # First available bit price - 1 price step
+
+

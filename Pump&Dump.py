@@ -28,3 +28,10 @@ expected_change_sell = 25 # Expected profit
 tolerance = 2 # Tolerance from max price
 
 final_buy_price_change = 1 + buy_price_change/100 # Transform 1% to 1.01
+# Filtering the data
+for x in range(len(data)):
+    if("BTC" in data[x]['symbol']): # Create list with cryptocurrencies that we can buy with BTC
+        position.append(x)
+        symbols.append(data[x]['symbol'])
+
+price=[[] for x in range(len(position))] # Create list of lists for symbol prices

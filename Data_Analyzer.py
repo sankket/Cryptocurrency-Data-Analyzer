@@ -201,3 +201,193 @@ def report_10_seconds():
         time.sleep(1)
 
 
+# Calculate score for each symbol, you can add as many parameters as you want
+def calculate_score():
+    for x in range(len(symbols)):
+            score = 0
+
+            # 2 minute change parameter score calculation
+            a = float(price_chance_2_min[x])
+            if a > 0 and a < 0.5:
+                score += 1
+            elif a >= 0.5 and a < 1:
+                score += 1.25
+            elif a >= 1 and a < 1.5:
+                score += 1.5
+            elif a >= 1.5 and a < 2:
+                score += 0.5
+            elif a >= 3:
+                score += 0.25
+
+            # 5 minute change parameter score calculation
+            a = float(price_chance_5_min[x])
+            if a > 0 and a < 0.5:
+                score += 1
+            elif a >= 0.5 and a < 1:
+                score += 1.25
+            elif a >= 1 and a < 2:
+                score += 1.5
+            elif a >= 2 and a < 3:
+                score += 0.5
+            elif a >= 3:
+                score += 0.25
+
+            # 15 minute change parameter score calculation
+            a = float(price_chance_15_min[x])
+            if a <= 1 and a > -0.5:
+                score += 0.25
+            elif a <= -0.5 and a > -1:
+                score += 0.5
+            elif a <= -1 and a > -1.5:
+                score += 0.75
+            elif a <= -1.5:
+                score += 1
+
+            # change between 25 and 30 minutes ago parameter score calculation
+            a = float(price_change_25_30_min[x])
+            if a <= 2 and a > -0.75:
+                score += 0.25
+            elif a <= -0.75 and a > -1.25:
+                score += 0.5
+            elif a <= -1.25 and a > -1.75:
+                score += 0.75
+            elif a <= -1.75:
+                score += 1
+
+            # 1 hour change parameter score calculation
+            a = float(price_chance_1_hour[x])
+            if a <= 2 and a >= 0:
+                score += 0.5
+            elif a <= 0 and a > -2:
+                score += 0.75
+            elif a <= -2:
+                score += 1
+
+            # 3 hour change parameter score calculation
+            a = float(price_chance_3_hour[x])
+            if a <= 5 and a > -1:
+                score += 0.25
+            elif a <= -1 and a > -3:
+                score += 0.5
+            elif a <= -3 and a > -6:
+                score += 0.75
+            elif a <= -6:
+                score += 1
+
+            # 8 hour change parameter score calculation
+            a = float(price_chance_8_hour[x])
+            if a <= 0 and a > -4:
+                score += 0.25
+            elif a <= -4 and a > -6:
+                score += 0.5
+            elif a <= -6:
+                score += 0.75
+
+
+
+            if float(ratio5[x]) > 0:
+                score += 1
+
+
+            a = 0
+            for i in range(len(ratio5_10sec[x])):
+                if float(price_chance_2_min[x]) > 0.55 or float(price_chance_5_min[x]) > 1:
+                    if float(ratio5_10sec[x][i]) > 0:
+                        a += 1
+                        if float(ratio5_sum_10sec[x][i]) > 0.3:
+                            a += 1
+            score += a / len(ratio5_sum_10sec[x])
+
+
+            if float(ratio20[x]) > 0:
+                score += 1
+
+            a = 0
+            for i in range(len(ratio5_10sec[x])-1):
+                if float(ratio5_10sec[x][i]) > 0:
+                    a += 1
+            if a <= 2:
+                score += 0.25
+            elif a > 2 and a <= 4:
+                score += 0.5
+            elif a > 4 and a <= 7:
+                score += 0.75
+            elif a > 7:
+                score += 1
+
+            a = 0
+            for i in range(20, 1, -1):
+                if float(k_line_1m[x][-i]) > float(k_line_1m[x][-(i - 1)]):
+                    a += 1
+            score += a / 10
+
+            # 1 day change parameter score calculation
+            if float(price_change_1_days[x]) > 5:
+                score+=0.3
+            # 3 day change parameter score calculation
+            if float(price_change_3_days[x]) > 10:
+                score += 0.25
+            # 5 day change parameter score calculation
+            if float(price_change_5_days[x]) > 15:
+                score += 0.25
+            # 7 day change parameter score calculation
+            if float(price_change_7_days[x]) > 20:
+                score += 0.25
+            # 10 day change parameter score calculation
+            if float(price_change_10_days[x]) > -25:
+                score += 0.25
+
+            # 10 minutes moving average parameter score calculation
+            a=float(average_change_10_min[x])
+            if a<0.2 and a>-0.3:
+                score+=0.1
+            # 20 minutes moving average parameter score calculation
+            a = float(average_change_20_min[x])
+            if a < 0.2 and a > -0.3:
+                score += 0.1
+            # 50 minutes moving average parameter score calculation
+            a = float(average_change_50_min[x])
+            if a < 0.2 and a > -0.3:
+                score += 0.1
+            # 100 minutes moving average parameter score calculation
+            a = float(average_change_100_min[x])
+            if a < 0.2 and a > -0.3:
+                score += 0.1
+
+            # save score
+            total_score[x] = score
+
+
+def print_results():
+    # sleep time before starting calculations
+    time.sleep(10)
+
+    while True:
+        for x in range(len(symbols)):
+            # calculate parameters percentages
+            try:
+                price_chance_2_min[x] = round(float(current_price[x]) * 100 / float(k_line_1m[x][- 2]) - 100, 2)
+                price_chance_5_min[x] = round(float(current_price[x]) * 100 / float(k_line_1m[x][- 5]) - 100, 2)
+                price_chance_15_min[x] = round(float(current_price[x]) * 100 / float(k_line_1m[x][- 15]) - 100, 2)
+                price_chance_30_min[x] = round(float(current_price[x]) * 100 / float(k_line_1m[x][- 30]) - 100, 2)
+                price_chance_1_hour[x] = round(float(current_price[x]) * 100 / float(k_line_1m[x][- 60]) - 100, 2)
+                price_chance_3_hour[x] = round(float(current_price[x]) * 100 / float(k_line_1m[x][- 180]) - 100, 2)
+                price_chance_8_hour[x] = round(float(current_price[x]) * 100 / float(k_line_1m[x][20]) - 100, 2)
+                price_change_25_30_min[x] = round(float(k_line_1m[x][- 6]) * 100 / float(k_line_1m[x][- 30]) - 100, 2)
+                price_change_1_days[x] = round(float(current_price[x]) * 100 / float(k_line_15m[x][- 96]) - 100, 1)
+                price_change_3_days[x] = round(float(current_price[x]) * 100 / float(k_line_15m[x][- 288]) - 100, 1)
+                price_change_5_days[x] = round(float(current_price[x]) * 100 / float(k_line_15m[x][- 480] )- 100, 1)
+                price_change_7_days[x] = round(float(current_price[x]) * 100 / float(k_line_15m[x][- 672]) - 100, 1)
+                price_change_10_days[x] = round(float(current_price[x]) * 100 / float(k_line_15m[x][- 960]) - 100, 1)
+                average_10_min[x] = round(float(sum(k_line_1m[x][- 10:])) / 10, 8)
+                average_20_min[x] = round(float(sum(k_line_1m[x][- 20:])) / 20, 8)
+                average_50_min[x] = round(float(sum(k_line_1m[x][- 50:])) / 50, 8)
+                average_100_min[x] = round(float(sum(k_line_1m[x][- 100:])) / 100, 8)
+                average_change_10_min[x] = round(float(current_price[x]) * 100 / float(average_10_min[x]) - 100, 2)
+                average_change_20_min[x] = round(float(current_price[x]) * 100 / float(average_20_min[x]) - 100, 2)
+                average_change_50_min[x] = round(float(current_price[x]) * 100 / float(average_50_min[x]) - 100, 2)
+                average_change_100_min[x] = round(float(current_price[x]) * 100 / float(average_100_min[x]) - 100, 2)
+            except Exception as e:
+                print(e)
+
+

@@ -119,3 +119,16 @@ def process_depth(msg):
             ratio5_sum[i] = round(float(sums5) * float(current_price[i]) * 100 / float(volume[i]),2)
             current_price[i] = float(msg['data']['bids'][0][0])
 
+
+# Refresh price and volume to current price and volume
+def process_ticker(msg):
+    i=0
+    for x in symbols:
+        for y in range(len(msg)):
+            if x == str(msg[y]['s']):
+                volume[i] = int(float(msg[y]['q']))
+                price_change[i] = int(float(msg[y]['P']))
+        i+=1
+
+symbols,volume,pozitii,k_line_1m,k_line_15m,price_change =get_kline()
+

@@ -132,3 +132,35 @@ def process_ticker(msg):
 
 symbols,volume,pozitii,k_line_1m,k_line_15m,price_change =get_kline()
 
+
+# Declaring lists necessary for storing data
+max_order5=[0 for x in range(len(symbols))]
+current_price= [0 for x in range(len(symbols))]
+price_chance_2_min = [0 for x in range(len(symbols))]
+price_chance_5_min = [0 for x in range(len(symbols))]
+price_chance_15_min = [0 for x in range(len(symbols))]
+price_chance_30_min = [0 for x in range(len(symbols))]
+price_change_25_30_min = [0 for x in range(len(symbols))]
+price_chance_1_hour = [0 for x in range(len(symbols))]
+price_chance_3_hour = [0 for x in range(len(symbols))]
+price_chance_8_hour = [0 for x in range(len(symbols))]
+price_change_1_days = [0 for x in range(len(symbols))]
+price_change_3_days = [0 for x in range(len(symbols))]
+price_change_5_days = [0 for x in range(len(symbols))]
+price_change_7_days = [0 for x in range(len(symbols))]
+price_change_10_days = [0 for x in range(len(symbols))]
+average_10_min = [0 for x in range(len(symbols))]
+average_20_min = [0 for x in range(len(symbols))]
+average_50_min = [0 for x in range(len(symbols))]
+average_100_min = [0 for x in range(len(symbols))]
+average_change_10_min = [0 for x in range(len(symbols))]
+average_change_20_min = [0 for x in range(len(symbols))]
+average_change_50_min = [0 for x in range(len(symbols))]
+average_change_100_min = [0 for x in range(len(symbols))]
+total_score = [0 for x in range(len(symbols))]
+ratio5=[0 for x in range(len(symbols))]
+ratio5_10sec=[[] for y in range(len(symbols))]
+ratio5_sum = [0 for x in range(len(symbols))]
+ratio5_sum_10sec = [[] for y in range(len(symbols))]
+ratio20= [0 for x in range(len(symbols))]
+

@@ -133,4 +133,32 @@ def buy_M(p,q):
     printf(order) # Call function printf that prints order details
 
 
+# Calculates asset,asset is necessary for placing a get_asset_balance order
+def calc_asset(symbol):
+    if symbol == "BTCUSDT":
+        asset=symbol[:-4] # asset will be equal to symbol - last 4 characters (last 4 characters being USDT)
+    elif symbol == "USDT":
+        asset="USDT"
+    else:
+        asset = symbol[:-3] # asset will be equal to symbol - last 3 characters (last 3 characters being BTC)
+    return asset
+
+# Get balance for specified symbol
+def getB(symbol):
+    asset = calc_asset(symbol) # Calculate asset, asset is necessary for placing a get_asset_balance order
+    order=''
+    try:
+        order = client.get_asset_balance(
+            asset= asset, # Current asset
+            recvWindow=10000) # revWindow is maximum time difference allowed between your computer system time and Binance server time
+    except BinanceAPIException as e: # If error has occurred print it
+        print (e.status_code)
+        print (e.message)
+    if order != '':
+        if float(order['free']) > 0: # Check if current available quantity is greater than 0
+            return order['free']
+        else:
+            print("0 Balance gB")
+            return min_Qty
+
 

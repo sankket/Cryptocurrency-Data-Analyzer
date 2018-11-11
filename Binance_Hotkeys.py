@@ -187,3 +187,60 @@ def on_pres(key):
     pL = float(price_buy) - min_price # First available bit price - 1 price step
 
 
+    # Show average buying price for current quantity available for current symbol
+    if k in ['a']:
+        bal = float(getB(symbol))
+        p,q=trades(bal)
+        print ('AvP: '+str('%.8f' % (float(p)-float(p)%float(min_price))).rstrip('0')
+               .rstrip('.')+" Q: "+str(bal))
+
+    if k in ['up']:
+        if symbol =="BTCUSDT":
+            buy_M(pS1,0)
+        else:
+            buy_M(price_sell * 0.999,quantity)
+
+    if k in ['right']: buy_M(pS,quantity)
+
+    if k in ['down']: sell_F(pL, quantity)
+
+    if k in ['0']: buy_M(pS + min_price, quantity)
+
+    # Place order for buy at 90% of current ask price
+    if k in ['1']: buy_M(price_sell*0.90, quantity)
+
+    # Place order for buy at 80% of current ask price
+    if k in ['2']: buy_M(price_sell * 0.8, quantity)
+
+    if k in ['left']: sell_F(pS1,quantity)
+
+    # Place buy order for equivalent of 0.002 bitcoin at current ask price + 1 price step
+    if k in ['e']: buy_M(pS, 0.002)
+
+    # Place buy order for equivalent of 0.003 bitcoin at current ask price + 1 price step
+    if k in ['d']: buy_M(pS, 0.002)
+
+    # Place sell order for equivalent of 0.01 bitcoin at current bit price - 1 price step
+    if k in ['w']: sell_M(pL, 0.01)
+
+    # Place sell order for equivalent of 0.02 bitcoin at current bit price - 1 price step
+    if k in ['s']: sell_M(pL, 0.02)
+
+    # Sell available quantity at average buying price + 0.5%
+    if k in ['z']: if_average(1.005)
+
+    # Sell available quantity at average buying price + 0.8%
+    if k in ['x']: if_average(1.008)
+
+    # Sell available quantity at average buying price + 1%
+    if k in ['c']: if_average(1.01)
+
+    # Pause
+    if k in ['p']:
+        return False
+
+    # Calcel all orders for current symbol
+    if k in ['q']:
+        print ("Canceled")
+        cancel_orders()
+

@@ -96,3 +96,22 @@ def sell_M(p,q):
 
     printf(order) # Call function printf that prints order details
 
+# Calculates correct price and quantity
+# p, pP is price and q, Qty is quantity, bal is quantity available from current symbol
+def pQ(p,q):
+    p=float(p)
+    q=float(q)
+    pP = p - p % min_price
+    if q == 0: # If quantity is not specified will sell all available quantity
+        if symbol == 'BTCUSDT':
+            bal = float(getB('USDT'))
+            Qty = bal / p - bal / p % min_Qty
+        else:
+            q = float(getB(symbol))
+            Qty = q - q % min_Qty
+    elif symbol == 'BTCUSDT':
+        Qty = q - q % min_Qty
+    else:
+        Qty = q / pP - q / pP % min_Qty
+    return pP , Qty
+

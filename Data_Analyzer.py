@@ -164,3 +164,40 @@ ratio5_sum = [0 for x in range(len(symbols))]
 ratio5_sum_10sec = [[] for y in range(len(symbols))]
 ratio20= [0 for x in range(len(symbols))]
 
+# Create list neccessary for depth socked
+list=[]
+for x in symbols:
+    list.append(x.lower()+'@depth20') # append @depth20 to each symbol and add it into list
+
+bm = BinanceSocketManager(client)
+bm.start()
+depth_socket = bm.start_multiplex_socket(list,process_depth) # start depth socket
+ticker_socket = bm.start_ticker_socket(process_ticker) # start price socket
+
+# maintain candlestick lists
+def kline_continuum():
+    i=0
+    while True:
+        time.sleep(60)
+        for x in range(len(symbols)):
+            k_line_1m[x].pop(0)
+            k_line_1m[x].append(current_price[x]) # add price to list of 1 minute candlestick every 1 minute
+            if i%15==0:
+                k_line_15m[x].pop(0)
+                k_line_15m[x].append(current_price[x]) # add price to list of 15 minute candlestick every 15 minute
+        i+=1
+
+
+# Save report between ask and bit for the last 10 seconds
+def report_10_seconds():
+    while True:
+        for x in range(len(symbols)):
+            if len(ratio5_10sec[x])>10:
+                ratio5_10sec[x].pop(0)
+            if len(ratio5_sum_10sec[x]) > 10:
+                ratio5_sum_10sec[x].pop(0)
+            ratio5_10sec[x].append(ratio5[x])
+            ratio5_sum_10sec[x].append(ratio5_sum[x])
+        time.sleep(1)
+
+

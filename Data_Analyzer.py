@@ -391,3 +391,16 @@ def print_results():
                 print(e)
 
 
+        # call function for score calculation
+        calculate_score()
+
+        # select parameter for which data is sorted
+        sort_by = total_score
+
+        # sort data
+        sorted_data = sorted(range(len(sort_by)), key=lambda k: sort_by[k])
+        # sort data in reverse order
+        sorted_data.reverse()
+
+
+
